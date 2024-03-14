@@ -2,6 +2,7 @@ from scrapy.spiders import SitemapSpider
 from scrapy import signals
 from scrapy.signalmanager import dispatcher
 from livablproject.items import LivablprojectItem
+from livablproject.utils.json_utils import restructure_json, convert_keys_to_snake_case
 import json
 import re
 from html import unescape
@@ -48,13 +49,48 @@ class LivablSitemapSpider(SitemapSpider):
         # Extract JSON data from the <script> tag as an example
         script_content = response.xpath("//script[contains(., 'GalleryID')]/text()").get()
         if script_content:
-            item['galleryData'] = self.decode_json_from_script(script_content)
+            item = self.organize_json_response(item)
+            item['gallery_data'] = self.decode_json_from_script(script_content)
         else:
             item['galleryData'] = "Not available"
         yield item
 
     def decode_json_from_script(self, script):
         json_pattern = re.compile(r'\.html\((.*?)\)\.val\(\);', re.DOTALL)
+        match = json_pattern.search(script)
+        if match:
+            json_str = unescape(match.group(1)[1:-1])  # Remove the leading and trailing JavaScript quotes and decode HTML entities
+            try:
+                json_data = json.loads(json_str)
+                return json_data
+            except json.JSONDecodeError as e:
+                self.logger.error(f'Error decoding JSON: {e}')
+        return "Not available"  # Return "Not available" if the regex didn't match or if parsing failed
+
+    def spider_closed(self, spider):
+        # Perform any cleanup here
+        self.logger.info(f'Spider {spider.name} is closing.')
+    def organize_json_response(self, item):
+        """
+        Organizes the item dictionary into a more structured and logical format.
+        This method is designed to handle the restructuring of nested JSON objects
+        and ensure that the output is intuitive and easy to use.
+
+        Parameters:
+        item (dict): The original item dictionary with unorganized data.
+
+        Returns:
+        dict: A new dictionary with organized data.
+        """
+        # Example of restructuring, can be customized based on specific needs
+        # Convert keys from camelCase to snake_case before organizing
+        item = convert_keys_to_snake_case(item)
+        # Define a schema for restructure_json if needed or directly use the item
+        schema = {
+            # Define the schema based on the desired structure
+        }
+        organized_item = restructure_json(item, schema)
+        return organized_item
         match = json_pattern.search(script)
         if match:
             json_str = unescape(match.group(1)[1:-1])  # Remove the leading and trailing JavaScript quotes and decode HTML entities
