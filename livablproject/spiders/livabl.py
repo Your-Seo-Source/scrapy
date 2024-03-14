@@ -2,6 +2,7 @@ import scrapy
 import json
 import re
 import csv
+from livablproject.utils.json_utils import format_scraped_data
 from html import unescape
 from livablproject.items import LivablprojectItem
 
@@ -69,7 +70,7 @@ class LivablSpider(scrapy.Spider):
             gallery_data = self.decode_json_from_script(script_content)
             if gallery_data:
                 item['galleryData'] = gallery_data
-        yield item
+        yield format_scraped_data(item)
 
 # items.py
 # class LivablprojectItem(scrapy.Item):
