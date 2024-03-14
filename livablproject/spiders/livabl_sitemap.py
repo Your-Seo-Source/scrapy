@@ -25,10 +25,10 @@ class LivablSitemapSpider(SitemapSpider):
             'incentives': 'div.price-incentive-container a::text',
             'address': 'div.address-wrapper-container span::text',
             'developer': 'a.developer-name::text',
-            'buildingType': 'div.dev-summary .col-lg-4:nth-child(1) .content-text span::text',
-            'unitsStories': 'div.dev-summary .col-lg-4:nth-child(2) .content-text span::text',
+            'building_type': 'div.dev-summary .col-lg-4:nth-child(1) .content-text span::text',
+            'units_stories': 'div.dev-summary .col-lg-4:nth-child(2) .content-text span::text',
             'bedrooms': 'div.dev-summary .col-lg-4:nth-child(3) .content-text span::text',
-            'sizeSqFt': 'div.dev-summary .col-lg-4:nth-child(5) .content-text span::text',
+            'size_sq_ft': 'div.dev-summary .col-lg-4:nth-child(5) .content-text span::text',
             'estimatedCompletion': 'div.dev-summary .col-lg-4:nth-child(4) .content-text span::text',
         }
         for field, css_selector in selectors.items():
@@ -48,7 +48,7 @@ class LivablSitemapSpider(SitemapSpider):
         # Extract JSON data from the <script> tag as an example
         script_content = response.xpath("//script[contains(., 'GalleryID')]/text()").get()
         if script_content:
-            item['galleryData'] = self.decode_json_from_script(script_content)
+            item['gallery_data'] = self.decode_json_from_script(script_content)
         else:
             item['galleryData'] = "Not available"
         yield item
