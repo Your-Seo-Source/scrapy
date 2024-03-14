@@ -28,6 +28,7 @@ class LivablSitemapSpider(SitemapSpider):
             'buildingType': 'div.dev-summary .col-lg-4:nth-child(1) .content-text span::text',
             'unitsStories': 'div.dev-summary .col-lg-4:nth-child(2) .content-text span::text',
             'bedrooms': 'div.dev-summary .col-lg-4:nth-child(3) .content-text span::text',
+from livablproject.utils.json_utils import format_scraped_data
             'sizeSqFt': 'div.dev-summary .col-lg-4:nth-child(5) .content-text span::text',
             'estimatedCompletion': 'div.dev-summary .col-lg-4:nth-child(4) .content-text span::text',
         }
@@ -51,7 +52,7 @@ class LivablSitemapSpider(SitemapSpider):
             item['galleryData'] = self.decode_json_from_script(script_content)
         else:
             item['galleryData'] = "Not available"
-        yield item
+        yield format_scraped_data(item)
 
     def decode_json_from_script(self, script):
         json_pattern = re.compile(r'\.html\((.*?)\)\.val\(\);', re.DOTALL)
