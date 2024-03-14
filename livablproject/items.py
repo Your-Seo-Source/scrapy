@@ -8,14 +8,14 @@ class LivablprojectItem(scrapy.Item):
     incentives = scrapy.Field()
     address = scrapy.Field()
     developer = scrapy.Field()
-    projecturl = scrapy.Field()  # Use snake_case for consistency
+    project_url = scrapy.Field()  # Use snake_case for consistency
     
     # Detailed project specifications
-    buildingType = scrapy.Field()  # Use snake_case for consistency
-    unitsStories = scrapy.Field()  # Use snake_case for consistency
+    building_type = scrapy.Field()  # Use snake_case for consistency
+    units_stories = scrapy.Field()  # Use snake_case for consistency
     bedrooms = scrapy.Field()
-    sizeSqFt = scrapy.Field()  # Use snake_case for consistency
-    estimatedCompletion = scrapy.Field()  # Use snake_case for consistency
+    size_sq_ft = scrapy.Field()  # Use snake_case for consistency
+    estimated_completion = scrapy.Field()  # Use snake_case for consistency
 
     # Additional project details
     ownership = scrapy.Field()
@@ -30,7 +30,7 @@ class LivablprojectItem(scrapy.Item):
     units = scrapy.Field()  # Store list of dictionaries for unit details here
 
     # Gallery Data from script tag's JSON
-    galleryData = scrapy.Field()  # Store gallery data here
+    gallery_data = scrapy.Field()  # Store gallery data here
     
     # Raw Development Units JSON Data
     hd_development_latitude = scrapy.Field()  # Use snake_case for consistency
