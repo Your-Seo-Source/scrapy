@@ -2,6 +2,7 @@ from scrapy.spiders import SitemapSpider
 from scrapy import signals
 from scrapy.signalmanager import dispatcher
 from livablproject.items import LivablprojectItem
+from livablproject.utils.json_utils import restructure_json, convert_keys_to_snake_case
 import json
 import re
 from html import unescape
@@ -82,23 +83,13 @@ class LivablSitemapSpider(SitemapSpider):
         dict: A new dictionary with organized data.
         """
         # Example of restructuring, can be customized based on specific needs
-        organized_item = {
-            'project_details': {
-                'name': item['name'],
-                'status': item['status'],
-                'price': item['price'],
-                'incentives': item['incentives'],
-                'address': item['address'],
-                'developer': item['developer'],
-                'building_type': item['buildingType'],
-                'units_stories': item['unitsStories'],
-                'bedrooms': item['bedrooms'],
-                'size_sq_ft': item['sizeSqFt'],
-                'estimated_completion': item['estimatedCompletion'],
-            },
-            'units': item['units'],
-            'gallery_data': item['galleryData']
+        # Convert keys from camelCase to snake_case before organizing
+        item = convert_keys_to_snake_case(item)
+        # Define a schema for restructure_json if needed or directly use the item
+        schema = {
+            # Define the schema based on the desired structure
         }
+        organized_item = restructure_json(item, schema)
         return organized_item
         match = json_pattern.search(script)
         if match:
