@@ -1,5 +1,11 @@
 from itemadapter import ItemAdapter
 
-class LivablprojectPipeline:
-    pass
-    # You can comment out all the code or simply do nothing in this class.
+# New file: livablproject/pipelines.py
+import scrapy
+from itemadapter import ItemAdapter
+from .items import LivablprojectItem
+
+class JsonOrganizerPipeline:
+    def process_item(self, item, spider):
+        organized_item = {key: item[key] for key in sorted(ItemAdapter(item).asdict().keys())}
+        return organized_item
