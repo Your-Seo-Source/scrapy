@@ -30,7 +30,7 @@ class LivablprojectItem(scrapy.Item):
     unit_details = scrapy.Field()  # Store list of dictionaries for unit details here
 
     # Gallery Data from script tag's JSON
-    galleryData = scrapy.Field()  # Store gallery data here
+    gallery_data = scrapy.Field()  # Store gallery data here
     
     # Raw Development Units JSON Data
     hd_development_latitude = scrapy.Field()  # Use snake_case for consistency
