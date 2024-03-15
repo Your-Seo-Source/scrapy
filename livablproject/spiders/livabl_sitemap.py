@@ -40,7 +40,18 @@ from livablproject.utils.json_utils import format_scraped_data
         # Extract data from hidden input field containing JSON
         units_json_str = response.css('input#hdDevelopmentUnits::attr(value)').get()
         # If JSON is present, decode it and assign to 'units' field, otherwise set a placeholder
-        if units_json_str:
+            # Parse the units JSON to create a structured representation
+            structured_units = []
+            for unit in units_json:
+                structured_unit = {
+                    'unit_id': unit.get('id', 'Not available'),
+                    'unit_type': unit.get('type', 'Not available'),
+                    'unit_price': unit.get('price', 'Not available'),
+                    'unit_size': unit.get('size', 'Not available'),
+                    'unit_status': unit.get('status', 'Not available')
+                }
+                structured_units.append(structured_unit)
+            item['unit_details'] = structured_units if structured_units else "Not available"
             units_json = json.loads(unescape(units_json_str))
             item['units'] = units_json
         else:
@@ -49,7 +60,13 @@ from livablproject.utils.json_utils import format_scraped_data
         # Extract JSON data from the <script> tag as an example
         script_content = response.xpath("//script[contains(., 'GalleryID')]/text()").get()
         if script_content:
-            item['galleryData'] = self.decode_json_from_script(script_content)
+            # Parse the gallery JSON to create a structured representation
+            gallery_data = self.decode_json_from_script(script_content)
+            structured_gallery_data = {
+                'gallery_id': gallery_data.get('GalleryID', 'Not available'),
+                'images': [{'image_url': img.get('url', 'Not available'), 'caption': img.get('caption', 'Not available')} for img in gallery_data.get('Images', [])]
+            }
+            item['galleryData'] = structured_gallery_data if structured_gallery_data else "Not available"
         else:
             item['galleryData'] = "Not available"
         yield format_scraped_data(item)

@@ -30,11 +30,17 @@ class LivablSpider(scrapy.Spider):
         match = json_pattern.search(script)
 
         if match:
-            json_str = unescape(match.group(1)[1:-1])  # Decode HTML entities and strip quotes
+            gallery_json_str = unescape(match.group(1)[1:-1])  # Decode HTML entities and strip quotes
             try:
-                return json.loads(json_str)
+                gallery_data = json.loads(gallery_json_str)
+                structured_gallery_data = {
+                    'gallery_id': gallery_data.get('GalleryID', 'Not available'),
+                    'images': [{'image_url': img.get('url', 'Not available'), 'caption': img.get('caption', 'Not available')} for img in gallery_data.get('Images', [])]
+                }
+                return structured_gallery_data if structured_gallery_data else "Not available"
             except json.JSONDecodeError as e:
                 self.logger.error(f"Error decoding JSON: {e}")
+                return None
         return None
 
 # items.py
@@ -61,9 +67,19 @@ class LivablSpider(scrapy.Spider):
         # Extract and process data from the hidden input field
         raw_json_str = response.css('input#hdDevelopmentUnits::attr(value)').get()
         if raw_json_str:
-            decoded_json_str = unescape(raw_json_str)
-            units_data = json.loads(decoded_json_str)
-            item['units'] = units_data
+            units_json_str = unescape(raw_json_str)
+            units_json = json.loads(units_json_str)
+            structured_units = []
+            for unit in units_json:
+                structured_unit = {
+                    'unit_id': unit.get('id', 'Not available'),
+                    'unit_type': unit.get('type', 'Not available'),
+                    'unit_price': unit.get('price', 'Not available'),
+                    'unit_size': unit.get('size', 'Not available'),
+                    'unit_status': unit.get('status', 'Not available')
+                }
+                structured_units.append(structured_unit)
+            item['unit_details'] = structured_units if structured_units else "Not available"
         # Extract and process data from <script> tag
         script_content = response.xpath("//script[contains(., 'GalleryID')]/text()").get()
         if script_content:

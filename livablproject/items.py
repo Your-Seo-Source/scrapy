@@ -27,7 +27,7 @@ class LivablprojectItem(scrapy.Item):
     ceilings = scrapy.Field()
     
     # Detailed unit information
-    units = scrapy.Field()  # Store list of dictionaries for unit details here
+    unit_details = scrapy.Field()  # Store list of dictionaries for unit details here
 
     # Gallery Data from script tag's JSON
     gallery_data = scrapy.Field()  # Store gallery data here
@@ -37,3 +37,5 @@ class LivablprojectItem(scrapy.Item):
     hd_development_longitude = scrapy.Field()  # Use snake_case for consistency
 
 # Remove PropertyListingItem unless it's actually being used as a separate class elsewhere in your spider
+    # Remove PropertyListingItem unless it's actually being used as a separate class elsewhere in your spider
+    # Note: The 'units' field has been replaced by 'unit_details' for structured unit information.
